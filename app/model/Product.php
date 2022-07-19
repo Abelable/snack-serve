@@ -12,6 +12,16 @@ class Product extends BaseModel
         return self::limit($count)->order('create_time desc')->select();
     }
 
+    public static function getProductDetail($id)
+    {
+        return self::with([
+            'imgs.img' => function($query) {
+                $query->order('order', 'asc');
+            },
+            'properties'
+        ])->find($id);
+    }
+
     public function getMainImgUrlAttr($value, $data)
     {
         return $this->prefixImgUrl($value, $data);

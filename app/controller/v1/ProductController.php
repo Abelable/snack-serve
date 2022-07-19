@@ -6,6 +6,7 @@ use app\controller\BaseController;
 use app\lib\exception\ProductException;
 use app\model\Product;
 use app\validate\Count;
+use app\validate\IDMustBePositiveInt;
 
 class ProductController extends BaseController
 {
@@ -17,5 +18,15 @@ class ProductController extends BaseController
             throw new ProductException();
         }
         return json($products);
+    }
+
+    public function getOne($id)
+    {
+        IDMustBePositiveInt::new()->goCheck();
+        $product = Product::getProductDetail($id);
+        if (!$product) {
+            throw new ProductException();
+        }
+        return json($product);
     }
 }
