@@ -10,6 +10,12 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
+Route::group('api/:version/token', function() {
+    Route::post('/user', 'api/:version.TokenController/getToken');
+    Route::post('/app', 'api/:version.TokenController/getAppToken');
+    Route::post('/verify', 'api/:version.TokenController/verifyToken');
+});
+
 Route::get('api/:version/banner/:id', 'api/:version.BannerController/getBanner');
 
 Route::group('api/:version/theme', function() {

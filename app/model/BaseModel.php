@@ -10,6 +10,7 @@ class BaseModel extends Model
 {
     use SoftDelete;
 
+    protected $autoWriteTimestamp = true;
     protected $hidden = ['create_time', 'update_time', 'delete_time'];
 
     protected function prefixImgUrl($value, $data)
