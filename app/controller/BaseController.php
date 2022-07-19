@@ -3,6 +3,8 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
+use app\lib\exception\UserException;
+use app\model\User;
 use app\service\TokenService;
 use think\App;
 use think\exception\ValidateException;
@@ -90,6 +92,15 @@ abstract class BaseController
         }
 
         return $v->failException(true)->check($data);
+    }
+
+    public function user()
+    {
+        $user = User::find($this->uid());
+        if (!$user) {
+            throw new UserException();
+        }
+        return $user;
     }
 
     public function uid()

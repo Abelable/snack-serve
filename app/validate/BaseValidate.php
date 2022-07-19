@@ -3,10 +3,7 @@
 namespace app\validate;
 
 use app\api\service\Token;
-use app\lib\enum\ScopeEnum;
-use app\lib\exception\ForbiddenException;
 use app\lib\exception\ParameterException;
-use app\lib\exception\TokenException;
 use think\facade\Request;
 use think\Validate;
 
@@ -30,10 +27,7 @@ class BaseValidate extends Validate
      */
     public function goCheck()
     {
-        // 必须设置contetn-type:application/json
-        $request = Request::instance();
-        $params = $request->param();
-        $params['token'] = $request->header('token');
+        $params = Request::instance()->param();
 
         if (!$this->check($params)) {
             // $this->error有一个问题，并不是一定返回数组，需要判断
@@ -41,30 +35,14 @@ class BaseValidate extends Validate
                 'msg' => is_array($this->error) ? implode(';', $this->error) : $this->error
             ]);
         }
-        return true;
-    }
-
-    /**
-     * @param array $arrays 通常传入request.post变量数组
-     * @return array 按照规则key过滤后的变量数组
-     * @throws ParameterException
-     */
-    public function getDataByRule($arrays)
-    {
-        if (array_key_exists('user_id', $arrays) | array_key_exists('uid', $arrays)) {
-            // 不允许包含user_id或者uid，防止恶意覆盖user_id外键
-            throw new ParameterException([
-                'msg' => '参数中包含有非法的参数名user_id或者uid'
-            ]);
-        }
         $newArray = [];
         foreach ($this->rule as $key => $value) {
-            $newArray[$key] = $arrays[$key];
+            $newArray[$key] = $params[$key] ?? null;
         }
         return $newArray;
     }
 
-    protected function isPositiveInteger($value, $rule='', $data='', $field='')
+    protected function isPositiveInteger($value, $rule='', $data=[], $field='')
     {
         if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0) {
             return true;
@@ -86,38 +64,8 @@ class BaseValidate extends Validate
     //手机号的验证规则
     protected function isMobile($value)
     {
-        $rule = '^1(3|4|5|7|8)[0-9]\d{8}$^';
-        $result = preg_match($rule, $value);
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
+        $phone = '/^((13[0-9])|(14[5,7,9])|(15[^4])|(18[0-9])|(17[0,1,3,5,6,7,8]))[0-9]{8}$/';
+        $ring = '/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/';
+        return preg_match($phone, $value) || preg_match($ring, $value);
     }
-    
-
-//    // 令牌合法并不代表操作也合法
-//    // 需要验证一致性
-//    protected function isUserConsistency($value, $rule, $data, $field)
-//    {
-//        $identities = getCurrentIdentity(['uid', 'power']);
-//        extract($identities);
-//
-//        // 如果当前令牌是管理员令牌，则允许令牌UID和操作UID不同
-//        if ($power == ScopeEnum::Super) {
-//            return true;
-//        }
-//        else {
-//            if ($value == $uid) {
-//                return true;
-//            }
-//            else {
-//                throw new TokenException([
-//                                             'msg' => '你怎么可以用自己的令牌操作别人的数据？',
-//                                             'code' => 403,
-//                                             'errorCode' => '10003'
-//                                         ]);
-//            }
-//        }
-//   }
 }

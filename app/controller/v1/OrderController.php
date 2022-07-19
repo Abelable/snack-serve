@@ -17,7 +17,7 @@ class OrderController extends BaseController
         CheckSuperScope::class => ['only' => ['delivery', 'getSummary']]
     ];
 
-    public function getSummaryByUser($page, $size)
+    public function getSummaryByUser($page = 1, $size = 15)
     {
         PagingParameter::new()->goCheck();
         $orderPagenite = Order::getSummaryByUser($this->uid(), $page, $size)->hidden(['snap_items', 'snap_address']);

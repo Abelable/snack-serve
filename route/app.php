@@ -48,3 +48,6 @@ Route::group('api/:version/order', function() {
     Route::get('/by_user', 'api/:version.OrderController/getSummaryByUser');
     Route::get('/paginate', 'api/:version.OrderController/getSummary');
 });
+
+Route::post('api/:version/address', 'api/:version.AddressController/createOrUpdateAddress');
+Route::get('api/:version/address', 'api/:version.AddressController/getUserAddress');
