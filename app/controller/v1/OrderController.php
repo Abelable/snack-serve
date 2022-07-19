@@ -3,11 +3,13 @@
 namespace app\controller\v1;
 
 use app\controller\BaseController;
+use app\lib\exception\OrderException;
 use app\middleware\CheckExclusiveScope;
 use app\middleware\CheckPrimaryScope;
 use app\middleware\CheckSuperScope;
 use app\model\Order;
 use app\service\OrderService;
+use app\validate\IDMustBePositiveInt;
 use app\validate\OrderPlace;
 use app\validate\PagingParameter;
 
@@ -31,5 +33,15 @@ class OrderController extends BaseController
         $data = OrderPlace::new()->goCheck();
         $status = OrderService::getInstance()->place($this->uid(), $data['products']);
         return json($status);
+    }
+
+    public function getDetail($id)
+    {
+        IDMustBePositiveInt::new()->goCheck();
+        $orderDetail = Order::find($id)->hidden(['prepay_id']);
+        if (!$orderDetail) {
+            throw new OrderException();
+        }
+        return json($orderDetail);
     }
 }
