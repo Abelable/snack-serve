@@ -29,4 +29,14 @@ class ProductController extends BaseController
         }
         return json($product);
     }
+
+    public function getAllInCategory($id)
+    {
+        IDMustBePositiveInt::new()->goCheck();
+        $products = Product::getProductsByCategoryId($id, false);
+        if ($products->isEmpty()) {
+            throw new ProductException();
+        }
+        return json($products);
+    }
 }

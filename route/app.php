@@ -34,3 +34,17 @@ Route::group('api/:version/product', function() {
     Route::get('/recent', 'api/:version.ProductController/getRecent');
 });
 
+Route::group('api/:version/category', function() {
+    Route::get('', 'api/:version.CategoryController/getCategories');
+//    Route::get('/:id', 'api/:version.CategoryController/getCategory')->pattern(['id'=>'\d+']);
+//    Route::get('/:id/products', 'api/:version.CategoryController/getCategory')->pattern(['id'=>'\d+']);
+    Route::get('/all', 'api/:version.CategoryController/getAllCategories');
+});
+
+Route::group('api/:version/order', function() {
+    Route::post('', 'api/:version.OrderController/placeOrder');
+    Route::get('/:id', 'api/:version.OrderController/getDetail')->pattern(['id'=>'\d+']);
+    Route::put('/delivery', 'api/:version.OrderController/delivery');
+    Route::get('/by_user', 'api/:version.OrderController/getSummaryByUser');
+    Route::get('/paginate', 'api/:version.OrderController/getSummary');
+});

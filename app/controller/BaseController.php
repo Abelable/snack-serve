@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
+use app\service\TokenService;
 use think\App;
 use think\exception\ValidateException;
 use think\Validate;
@@ -91,4 +92,8 @@ abstract class BaseController
         return $v->failException(true)->check($data);
     }
 
+    public function uid()
+    {
+        return TokenService::getCurrentUid();
+    }
 }
