@@ -195,4 +195,15 @@ class OrderService extends BaseService
                 '%02d', rand(0, 99));
         return $orderSn;
     }
+
+    public function checkOrderStock($orderID)
+    {
+        // 一定要从订单商品表中直接查询
+        // 不能从商品表中查询订单商品
+        // 这将导致被删除的商品无法查询出订单商品来
+        $oProducts = OrderProduct::where('order_id', '=', $orderID)->select();
+        $products = $this->getProductsByOrder($oProducts);
+        $status = $this->getOrderStatus($oProducts, $products);
+        return $status;
+    }
 }

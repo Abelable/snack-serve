@@ -4,7 +4,6 @@ namespace app\model;
 
 class Product extends BaseModel
 {
-    protected $autoWriteTimestamp = 'datetime';
     protected $hidden = ['main_img_id', 'pivot', 'from', 'category_id', 'create_time', 'update_time', 'delete_time'];
 
     public static function getMostRecent($count)

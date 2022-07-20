@@ -13,6 +13,11 @@ class BaseModel extends Model
     protected $autoWriteTimestamp = true;
     protected $hidden = ['create_time', 'update_time', 'delete_time'];
 
+    public static function new()
+    {
+        return new static();
+    }
+
     protected function prefixImgUrl($value, $data)
     {
         if ($data['from'] == 1) {
