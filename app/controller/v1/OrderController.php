@@ -46,17 +46,17 @@ class OrderController extends BaseController
         return json($orderDetail);
     }
 
-    public function delivery($id)
-    {
-        IDMustBePositiveInt::new()->goCheck();
-        OrderService::getInstance()->delivery($id);
-        return json('ok', 201);
-    }
-
     public function getSummary($page = 1, $size = 20)
     {
         PagingParameter::new()->goCheck();
         $pagingOrders = Order::getSummaryByPage($page, $size)->hidden(['user_id', 'snap_items', 'snap_address', 'update_time', 'delete_time']);
         return json($pagingOrders);
+    }
+
+    public function delivery($id)
+    {
+        IDMustBePositiveInt::new()->goCheck();
+        OrderService::getInstance()->delivery($id);
+        return json('ok', 201);
     }
 }

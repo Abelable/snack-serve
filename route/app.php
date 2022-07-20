@@ -40,7 +40,7 @@ Route::get('api/:version/category/all', 'api/:version.CategoryController/getAllC
 Route::group('api/:version/order', function() {
     Route::post('', 'api/:version.OrderController/placeOrder');
     Route::get('/:id', 'api/:version.OrderController/getDetail')->pattern(['id'=>'\d+']);
-    Route::put('/delivery', 'api/:version.OrderController/delivery');
+    Route::put('/delivery', 'api/:version.OrderController/delivery')->allowCrossDomain(['Access-Control-Allow-Headers' => 'token']);
     Route::get('/by_user', 'api/:version.OrderController/getSummaryByUser');
     Route::get('/paginate', 'api/:version.OrderController/getSummary')->allowCrossDomain(['Access-Control-Allow-Headers' => 'token']);
 });
