@@ -2,11 +2,14 @@
 
 namespace app\service;
 
+use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\OrderException;
+use app\lib\exception\UserException;
 use app\model\Order;
 use app\model\OrderProduct;
 use app\model\Product;
 use app\model\UserAddress;
+use think\Exception;
 use think\facade\Db;
 
 class OrderService extends BaseService
@@ -131,23 +134,14 @@ class OrderService extends BaseService
 
     private function snapProduct($product, $oCount)
     {
-        $pStatus = [
-            'id' => null,
-            'name' => null,
-            'main_img_url' => null,
+        return [
+            'id' => $product['id'],
+            'name' => $product['name'],
+            'main_img_url' => $product['main_img_url'],
             'count' => $oCount,
-            'totalPrice' => 0,
-            'price' => 0
+            'totalPrice' => $oCount * $product['price'], // 以服务器价格为准，生成订单
+            'price' => $product['price']
         ];
-
-        $pStatus['counts'] = $oCount;
-        // 以服务器价格为准，生成订单
-        $pStatus['totalPrice'] = $oCount * $product['price'];
-        $pStatus['name'] = $product['name'];
-        $pStatus['id'] = $product['id'];
-        $pStatus['main_img_url'] = $product['main_img_url'];
-        $pStatus['price'] = $product['price'];
-        return $pStatus;
     }
 
     private function createOrderByTrans($uid, $snap, $oProducts)
@@ -205,5 +199,24 @@ class OrderService extends BaseService
         $products = $this->getProductsByOrder($oProducts);
         $status = $this->getOrderStatus($oProducts, $products);
         return $status;
+    }
+
+    public function delivery($orderID, $jumpPage = '')
+    {
+        $order = Order::find($orderID);
+        if (!$order) {
+            throw new OrderException();
+        }
+        if ($order->status != OrderStatusEnum::PAID) {
+            throw new OrderException([
+                'msg' => '还没付款呢，想干嘛？或者你已经更新过订单了，不要再刷了',
+                'errorCode' => 80002,
+                'code' => 403
+            ]);
+        }
+        $order->status = OrderStatusEnum::DELIVERED;
+        $order->save();
+        $message = new DeliveryMsgService();
+        return $message->sendDeliveryMessage($order, $jumpPage);
     }
 }

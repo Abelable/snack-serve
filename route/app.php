@@ -12,7 +12,7 @@ use think\facade\Route;
 
 Route::group('api/:version/token', function() {
     Route::post('/user', 'api/:version.TokenController/getToken');
-    Route::post('/app', 'api/:version.TokenController/getAppToken');
+    Route::post('/app', 'api/:version.TokenController/getAppToken')->allowCrossDomain();
     Route::post('/verify', 'api/:version.TokenController/verifyToken');
 });
 
@@ -42,7 +42,7 @@ Route::group('api/:version/order', function() {
     Route::get('/:id', 'api/:version.OrderController/getDetail')->pattern(['id'=>'\d+']);
     Route::put('/delivery', 'api/:version.OrderController/delivery');
     Route::get('/by_user', 'api/:version.OrderController/getSummaryByUser');
-    Route::get('/paginate', 'api/:version.OrderController/getSummary');
+    Route::get('/paginate', 'api/:version.OrderController/getSummary')->allowCrossDomain(['Access-Control-Allow-Headers' => 'token']);
 });
 
 Route::group('api/:version/pay', function() {

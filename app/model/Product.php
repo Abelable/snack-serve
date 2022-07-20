@@ -24,7 +24,7 @@ class Product extends BaseModel
     public static function getProductsByCategoryId($categoryId, $paginate = true, $page = 1, $size = 30)
     {
         $query = self::where('category_id', $categoryId);
-        return $paginate ? $query->paginate(['var_page' => $page,'list_rows' => $size], true) : $query->select();
+        return $paginate ? $query->paginate(['page' => $page,'list_rows' => $size], true) : $query->select();
     }
 
     public function getMainImgUrlAttr($value, $data)

@@ -10,13 +10,13 @@ class Order extends BaseModel
     {
         return self::where('user_id', $uid)
             ->order('create_time desc')
-            ->paginate(['var_page' => $page, 'list_rows' => $size], true);
+            ->paginate(['page' => $page, 'list_rows' => $size], true);
     }
 
     public static function getSummaryByPage($page = 1, $size = 15)
     {
         return self::order('create_time desc')
-            ->paginate(['var_page' => $page, 'list_rows' => $size], true);
+            ->paginate(['page' => $page, 'list_rows' => $size], true);
     }
 
     public function products()

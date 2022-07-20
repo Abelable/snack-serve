@@ -24,7 +24,8 @@ class OrderController extends BaseController
     public function getSummaryByUser($page = 1, $size = 15)
     {
         PagingParameter::new()->goCheck();
-        $orderPagenite = Order::getSummaryByUser($this->uid(), $page, $size)->hidden(['snap_items', 'snap_address']);
+        $orderPagenite = Order::getSummaryByUser($this->uid(), $page, $size)
+            ->hidden(['user_id', 'snap_items', 'snap_address', 'update_time', 'delete_time']);
         return json($orderPagenite);
     }
 
@@ -43,5 +44,19 @@ class OrderController extends BaseController
             throw new OrderException();
         }
         return json($orderDetail);
+    }
+
+    public function delivery($id)
+    {
+        IDMustBePositiveInt::new()->goCheck();
+        OrderService::getInstance()->delivery($id);
+        return json('ok', 201);
+    }
+
+    public function getSummary($page = 1, $size = 20)
+    {
+        PagingParameter::new()->goCheck();
+        $pagingOrders = Order::getSummaryByPage($page, $size)->hidden(['user_id', 'snap_items', 'snap_address', 'update_time', 'delete_time']);
+        return json($pagingOrders);
     }
 }
