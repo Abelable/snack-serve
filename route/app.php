@@ -45,12 +45,8 @@ Route::group('api/:version/order', function() {
     Route::get('/paginate', 'api/:version.OrderController/getSummary')->allowCrossDomain(['Access-Control-Allow-Headers' => 'token']);
 });
 
-Route::group('api/:version/pay', function() {
-    Route::post('/pre_order', 'api/:version.PayController/getPreOrder');
-    Route::post('/notify', 'api/:version.PayController/receiveNotify');
-    Route::post('/re_notify', 'api/:version.PayController/redirectNotify');
-    Route::post('/concurrency', 'api/:version.PayController/notifyConcurrency');
-});
+Route::post('api/:version/pay/pre_order', 'api/:version.PayController/getPreOrder');
+Route::post('api/:version/pay/notify', 'api/:version.PayController/receiveNotify');
 
 Route::post('api/:version/address', 'api/:version.AddressController/createOrUpdateAddress');
 Route::get('api/:version/address', 'api/:version.AddressController/getUserAddress');
